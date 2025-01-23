@@ -16,7 +16,7 @@ class Attachment(BaseModel):
     file_type = models.CharField(max_length=150)
     file_size = models.IntegerField()
     uploaded_by = models.ForeignKey(
-        "users.User",
+        "users.Member",
         on_delete=models.CASCADE,
         related_name="%(class)s_attachment",
         verbose_name=_("Uploaded By"),
@@ -46,7 +46,7 @@ class LedgerDoumentAttachment(BaseModel):
     file_type = models.CharField(max_length=150)
     file_size = models.IntegerField()
     uploaded_by = models.ForeignKey(
-        "users.User",
+        "users.Member",
         on_delete=models.CASCADE,
         related_name="%(class)s_attachment",
         verbose_name=_("Uploaded By"),

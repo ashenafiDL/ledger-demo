@@ -13,7 +13,7 @@ class Sender(BaseModel):
     sender_name = models.CharField(max_length=200, null=True, blank=True)
     sender_phone_number = models.PositiveBigIntegerField(null=True, blank=True)
     sender_email = models.EmailField(max_length=200, null=True, blank=True)
-    sender_address = models.CharField(null=True, blank=True)
+    sender_address = models.CharField(null=True, blank=True, max_length=200)
     sender_type = models.CharField(max_length=200, choices=SenderType.choices, default=SenderType.ORGANIZATION)
 
     def __str__(self):

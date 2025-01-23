@@ -2,7 +2,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import transaction
 
 from core.departments.models import Department, JobTitle
-from core.users.models.user import User
+from core.users.models import Member
 
 from .models.attachment import Attachment, LedgerDoumentAttachment
 from .models.carrier import Carrier
@@ -16,7 +16,7 @@ from .models.sender import Sender
 
 @transaction.atomic
 def create_ledger(
-    current_user: User,
+    current_user: Member,
     carrier_person_first_name: str,
     carrier_person_last_name: str,
     carrier_phone_number: str,

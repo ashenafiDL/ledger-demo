@@ -18,6 +18,8 @@ LOCAL_APPS = [
     "core.api.apps.ApiConfig",
     "core.authentication.apps.AuthenticationConfig",
     "core.users.apps.UsersConfig",
+    "core.departments.apps.DepartmentsConfig",
+    "core.ledgers.apps.LedgerConfig",
 ]
 
 THIRD_PARTY_APPS: list[str] = [
@@ -30,6 +32,13 @@ THIRD_PARTY_APPS: list[str] = [
     "rest_framework",
 ]
 INSTALLED_APPS: list[str] = [
+    "unfold",  # before django.contrib.admin
+    "unfold.contrib.filters",  # optional, if special filters are needed
+    "unfold.contrib.forms",  # optional, if special form elements are needed
+    "unfold.contrib.inlines",  # optional, if special inlines are needed
+    "unfold.contrib.import_export",  # optional, if django-import-export package is used
+    "unfold.contrib.guardian",  # optional, if django-guardian package is used
+    "unfold.contrib.simple_history",  # optional, if django-simple-history package is used
     "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -90,8 +99,12 @@ CHANNEL_LAYERS = {
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": env.str("DB_NAME"),
+        "USER": env.str("DB_USER"),
+        "PASSWORD": env.str("DB_PASSWORD"),
+        "HOST": env.str("DB_HOST"),
+        "PORT": env.str("DB_PORT"),
     },
 }
 
@@ -155,9 +168,7 @@ AUTHENTICATION_BACKENDS = (
 )
 
 ANONYMOUS_USER_NAME = None
-GUARDIAN_GET_CONTENT_TYPE = (
-    "polymorphic.contrib.guardian.get_polymorphic_base_content_type"
-)
+GUARDIAN_GET_CONTENT_TYPE = "polymorphic.contrib.guardian.get_polymorphic_base_content_type"
 
 from config.settings.logging import *  # noqa
 from config.settings.cors import *  # noqa

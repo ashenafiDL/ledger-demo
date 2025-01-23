@@ -4,6 +4,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from core.common.models import BaseModel
+from core.departments.models import Department, JobTitle
 
 
 class BaseUserManager(BUM):
@@ -43,6 +44,23 @@ class BaseUser(BaseModel):
 
 
 class Member(BaseUser, AbstractUser, PermissionsMixin):
+    department = models.ForeignKey(
+        Department,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_("Department"),
+        help_text=_("Select the department of the employee."),
+    )
+    job_title = models.ForeignKey(
+        JobTitle,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_("Job Title"),
+        help_text=_("Select the job title of the employee."),
+    )
+
     username = None
     email = models.EmailField(
         _("email address"),

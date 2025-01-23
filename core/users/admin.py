@@ -1,17 +1,19 @@
 from django.contrib import admin, messages
 from django.core.exceptions import ValidationError
+from unfold.admin import ModelAdmin
 
 from .models import Member
 from .services import user_create
 
 
-@admin.register(Member)
-class MemberAdmin(admin.ModelAdmin):
+class MemberAdmin(ModelAdmin):
     base_model = Member
     list_display: list[str] = [
         "email",
         "full_name",
         "is_staff",
+        "department",
+        "job_title",
     ]
     search_fields: list[str] = ["email"]
     fieldsets = (
@@ -31,6 +33,15 @@ class MemberAdmin(admin.ModelAdmin):
                     "first_name",
                     "last_name",
                     "phone_number",
+                ),
+            },
+        ),
+        (
+            "Organization Info",
+            {
+                "fields": (
+                    "department",
+                    "job_title",
                 ),
             },
         ),
@@ -71,3 +82,6 @@ class MemberAdmin(admin.ModelAdmin):
             user_create(**form.cleaned_data)
         except ValidationError as exc:
             self.message_user(request, str(exc), messages.ERROR)
+
+
+admin.site.register(Member, MemberAdmin)
