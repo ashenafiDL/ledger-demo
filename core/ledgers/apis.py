@@ -22,6 +22,7 @@ from .serializers import (
     LedgerListSerializer,
     LedgerNewSerializer,
     LedgerSerializer,
+    LedgerSharingSerializer,
     MetadataSerializer,
     RecipientSerializer,
 )
@@ -33,6 +34,7 @@ from .services import (
     create_ledger_entry,
     create_metadata,
     create_recipient,
+    share_ledger,
 )
 from .tasks import generate_ledger_pdf
 
@@ -201,3 +203,29 @@ class LedgerDetailAPIView(ApiAuthMixin, APIView):
             return Response(serializer.data)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class ShareLedgerAPIView(ApiAuthMixin, APIView):
+    serializer_class = LedgerSharingSerializer
+
+    def post(self, request, *args, **kwargs):
+        ledger_id = request.data.get("ledger")
+        shared_to_id = request.data.get("shared_to")
+
+        try:
+            sharing_instance = share_ledger(
+                ledger_id=ledger_id,
+                shared_to_id=shared_to_id,
+            )
+
+            serializer = LedgerSharingSerializer(sharing_instance)
+
+            return Response(
+                data=serializer.data,
+                status=status.HTTP_201_CREATED,
+            )
+        except Exception as e:
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )

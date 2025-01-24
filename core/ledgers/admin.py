@@ -6,6 +6,7 @@ from .models.carrier import Carrier
 from .models.delivery import Delivery
 from .models.document import Document
 from .models.ledger import Ledger
+from .models.ledger_sharing import LedgerSharing
 from .models.metadata import Metadata
 from .models.recipient import Recipient
 
@@ -115,7 +116,7 @@ class DeliveryAdmin(ModelAdmin):
                     "delivery_channel",
                     "delivery_medium",
                     "delivery_organization",
-                    "tracking_number",
+                    # "tracking_number",
                     "delivery_status",
                     "expected_delivery_date",
                 ),
@@ -181,6 +182,12 @@ class RecipientAdmin(ModelAdmin):
 
     fieldsets = (
         (
+            "Ledger Info",
+            {
+                "fields": ("ledger",),
+            },
+        ),
+        (
             "Recipient Info",
             {
                 "fields": (
@@ -234,3 +241,28 @@ class MetadataAdmin(ModelAdmin):
 
 
 admin.site.register(Metadata, MetadataAdmin)
+
+
+class LedgerSharingAdmin(ModelAdmin):
+    list_display = [
+        "ledger",
+        "shared_to",
+        "shared_at",
+    ]
+    ordering = ["-shared_at"]
+    search_fields = ["shared_to__email"]
+    list_filter = ["shared_at"]
+    fieldsets = (
+        (
+            "Sharing Info",
+            {
+                "fields": (
+                    "ledger",
+                    "shared_to",
+                ),
+            },
+        ),
+    )
+
+
+admin.site.register(LedgerSharing, LedgerSharingAdmin)

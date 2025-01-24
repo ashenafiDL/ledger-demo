@@ -9,6 +9,7 @@ from .models.carrier import Carrier
 from .models.delivery import Delivery
 from .models.document import Document
 from .models.ledger import Ledger
+from .models.ledger_sharing import LedgerSharing
 from .models.metadata import Metadata
 from .models.recipient import Recipient
 from .models.sender import Sender
@@ -413,3 +414,19 @@ def create_sender(
     sender.save()
 
     return sender
+
+
+def share_ledger(ledger_id: str, shared_to_id: str) -> LedgerSharing:
+    ledger = Ledger.objects.get(id=ledger_id)
+    shared_to = Member.objects.get(id=shared_to_id)
+
+    sharing_instance = LedgerSharing.objects.create(
+        ledger=ledger,
+        shared_to=shared_to,
+    )
+
+    sharing_instance.full_clean()
+
+    sharing_instance.save()
+
+    return sharing_instance

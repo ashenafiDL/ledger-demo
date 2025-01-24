@@ -5,6 +5,7 @@ from .models.carrier import Carrier
 from .models.delivery import Delivery
 from .models.document import Document
 from .models.ledger import Ledger
+from .models.ledger_sharing import LedgerSharing
 from .models.metadata import Metadata
 from .models.recipient import Recipient
 from .models.sender import Sender
@@ -193,3 +194,10 @@ class LedgerNewSerializer(serializers.Serializer):
     sender_email = serializers.CharField(required=False, allow_blank=True)
     sender_address = serializers.CharField(required=False, allow_blank=True)
     sender_type = serializers.CharField(required=False, allow_blank=True)
+
+
+class LedgerSharingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LedgerSharing
+        fields = ["ledger", "shared_to", "shared_at"]
+        read_only_fields = ["shared_at"]

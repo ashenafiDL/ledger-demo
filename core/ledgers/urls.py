@@ -5,6 +5,7 @@ from .apis import (
     LedgerListApi,
     LedgerNewAPIView,
     LedgerPdfDownloadAPIView,
+    ShareLedgerAPIView,
 )
 
 app_name = "ledgers"
@@ -15,6 +16,7 @@ urlpatterns = [
     path("<uuid:ledger_id>/detail/", LedgerDetailAPIView.as_view(), name="ledger_detail"),
     path("<uuid:ledger_id>/pdf/", LedgerPdfDownloadAPIView.as_view(), name="ledger_pdf"),
     path("create/", LedgerNewAPIView.as_view(), name="ledger-create"),
+    path("share/", ShareLedgerAPIView.as_view(), name="share-ledger"),
     # path("create/carrier/", CarrierCreateAPIView.as_view(), name="createcarrier"),
     # path("create/recipient/", RecipientCreateAPIView.as_view(), name="rec"),
     # path("create/document/", DocumentCreateAPIView.as_view(), name="doc"),
