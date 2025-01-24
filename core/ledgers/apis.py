@@ -4,7 +4,7 @@ from datetime import datetime
 from django.core.files.storage import default_storage
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
-from rest_framework import status
+from rest_framework import status, serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
@@ -16,7 +16,6 @@ from .models import LedgerSharing
 from .models import Ledger
 from .selectors import ledger_details
 from .serializers import (
-
     LedgerDetailSerializer,
     LedgerListSerializer,
     LedgerNewSerializer,
@@ -75,7 +74,6 @@ class LedgerPdfDownloadAPIView(ApiAuthMixin, APIView):
 
 
 class LedgerListApi(ApiAuthMixin, APIView):
-    required_object_perms = ["can_view_letter", "can_submit_letter"]
 
     serializer_class = LedgerListSerializer
 
@@ -108,21 +106,19 @@ class LedgerDetailAPIView(ApiAuthMixin, APIView):
 
 
 class ShareLedgerAPIView(ApiAuthMixin, APIView):
-    serializer_class = LedgerSharingSerializer
+    class InputSerializer(serializers.Serializer):
+        shared_to = serializers.UUIDField()
 
-    def post(self, request, *args, **kwargs):
-        ledger_id = request.data.get("ledger")
-        shared_to_id = request.data.get("shared_to")
-        shared_by_id = request.user.id
+    serializer_class = InputSerializer
 
+    def post(self, request, ledger_id):
         try:
-            sharing_instance = share_ledger(
-                ledger_id=ledger_id,
-                shared_to_id=shared_to_id,
-                shared_by_id=shared_by_id
-            )
+            input_serializer = self.InputSerializer(data=request.data)
+            input_serializer.is_valid(raise_exception=True)
 
-            serializer = LedgerSharingSerializer(sharing_instance)
+            sharing_instance = share_ledger(
+                ledger_id=ledger_id, shared_to=request.user, **input_serializer.validated_data
+            )
 
             return Response(
                 {"id": sharing_instance.id, "message": "Ledger shared successfully."},
@@ -141,9 +137,7 @@ class SharedLedgersAPIView(ApiAuthMixin, APIView):
 
     def get(self, request) -> Response:
         try:
-            user_id = request.user.id
-
-            shared_ledgers = LedgerSharing.objects.filter(shared_to=user_id).select_related("ledger")
+            shared_ledgers = LedgerSharing.objects.filter(shared_to=request.user).select_related("ledger")
             serializer = LedgerSharingSerializer(shared_ledgers, many=True)
 
             return Response(data=serializer.data, status=status.HTTP_200_OK)

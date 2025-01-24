@@ -72,7 +72,7 @@ class LedgerListSerializer(serializers.Serializer):
     ledger_status = serializers.CharField( required=False)
     written_at = serializers.CharField()
     metadata_confidentiality = serializers.CharField(required=False)
-
+    created_at = serializers.DateTimeField(required=False)
 
 class LedgerSharingSerializer(serializers.ModelSerializer):
     ledger = LedgerListSerializer()

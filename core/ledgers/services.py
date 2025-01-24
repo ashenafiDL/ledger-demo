@@ -1,6 +1,5 @@
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import transaction
-from django.forms import ValidationError
 
 from core.departments.models import Department, JobTitle
 from .models import Ledger, Attachment, LedgerDoumentAttachment, LedgerSharing
@@ -105,9 +104,8 @@ def create_ledger(
     return ledger
 
 
-def share_ledger(ledger_id: str, shared_to_id: str, shared_by_id: str) -> LedgerSharing:
+def share_ledger(ledger_id: str, shared_to: Member, shared_by_id: str) -> LedgerSharing:
     ledger = Ledger.objects.get(id=ledger_id)
-    shared_to = Member.objects.get(id=shared_to_id)
     shared_by = Member.objects.get(id=shared_by_id)
 
     sharing_instance = LedgerSharing.objects.create(

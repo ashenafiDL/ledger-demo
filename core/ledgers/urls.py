@@ -12,15 +12,10 @@ from .apis import (
 app_name = "ledgers"
 
 urlpatterns = [
-    # path("create/ledger/", LedgerCreate.as_view(), name="createledger"),
     path("", LedgerListApi.as_view(), name="ledger_list"),
+    path("create/", LedgerNewAPIView.as_view(), name="ledger-create"),
     path("<uuid:ledger_id>/detail/", LedgerDetailAPIView.as_view(), name="ledger_detail"),
     path("<uuid:ledger_id>/pdf/", LedgerPdfDownloadAPIView.as_view(), name="ledger_pdf"),
-    path("create/", LedgerNewAPIView.as_view(), name="ledger-create"),
-    path("share/", ShareLedgerAPIView.as_view(), name="share-ledger"),
+    path("<uuid:ledger_id>/share/", ShareLedgerAPIView.as_view(), name="share-ledger"),
     path("shared/", SharedLedgersAPIView.as_view(), name="shared-ledgers"),
-    # path("create/carrier/", CarrierCreateAPIView.as_view(), name="createcarrier"),
-    # path("create/recipient/", RecipientCreateAPIView.as_view(), name="rec"),
-    # path("create/document/", DocumentCreateAPIView.as_view(), name="doc"),
-    # path("create/delivery/", DeliveryCreateAPIView.as_view(), name="delivery"),
 ]
