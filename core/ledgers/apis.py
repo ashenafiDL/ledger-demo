@@ -11,125 +11,22 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from core.api.mixins import ApiAuthMixin
-from core.ledgers.models.ledger_sharing import LedgerSharing
+from .models import LedgerSharing
 
-from .models.ledger import Ledger
+from .models import Ledger
 from .selectors import ledger_details
 from .serializers import (
-    CarrierSerializer,
-    DeliverySerializer,
-    DocumentSerializer,
+
     LedgerDetailSerializer,
     LedgerListSerializer,
     LedgerNewSerializer,
-    LedgerSerializer,
     LedgerSharingSerializer,
-    MetadataSerializer,
-    RecipientSerializer,
 )
 from .services import (
-    create_carrier,
-    create_delivery,
-    create_document_with_attachments_and_letters,
-    create_ledger,
-    create_ledger_entry,
-    create_metadata,
-    create_recipient,
     share_ledger,
+    create_ledger,
 )
 from .tasks import generate_ledger_pdf
-
-
-class LedgerCreate(ApiAuthMixin, APIView):
-    def post(self, request):
-        serializer = LedgerSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        ledger = create_ledger_entry(**serializer.validated_data)
-
-        return Response(
-            {"message": "Ledger created successfully", "ledger_id": ledger.id},
-            status=status.HTTP_201_CREATED,
-        )
-
-
-class CarrierCreateAPIView(ApiAuthMixin, APIView):
-    def post(self, request, *args, **kwargs):
-        serializer = CarrierSerializer(data=request.data)
-        if serializer.is_valid():
-            try:
-                carrier = create_carrier(**serializer.validated_data)
-                return Response(CarrierSerializer(carrier).data, status=status.HTTP_201_CREATED)
-            except ValidationError as e:
-                return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class RecipientCreateAPIView(ApiAuthMixin, APIView):
-    def post(self, request, *args, **kwargs):
-        serializer = RecipientSerializer(data=request.data)
-
-        if serializer.is_valid():
-            try:
-                create_recipient(**serializer.validated_data)
-
-                return Response(serializer.validated_data, status=status.HTTP_201_CREATED)
-            except ValidationError as e:
-                return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class DocumentCreateAPIView(ApiAuthMixin, APIView):
-    parser_classes = (MultiPartParser, FormParser)
-
-    def post(self, request, *args, **kwargs):
-        attachments = [file for key, file in request.FILES.items() if key.startswith("attachments")]
-        letters = [file for key, file in request.FILES.items() if key.startswith("letters")]
-
-        data = request.data.copy()
-
-        document_date = datetime.fromisoformat(data["document_date"])
-
-        try:
-            document = create_document_with_attachments_and_letters(
-                ledger=data["ledger"],
-                document_type=data["document_type"],
-                document_date=document_date,
-                document_owner=data["document_owner"],
-                additional_message=data.get("additional_message", ""),
-                attachments_data=attachments,
-                letters_data=letters,
-                current_user=request.user,
-            )
-            return Response(DocumentSerializer(document).data, status=status.HTTP_201_CREATED)
-        except ValidationError as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        except Exception:
-            return Response({"error": "An unexpected error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-class MetadataCreateAPIView(ApiAuthMixin, APIView):
-    def post(self, request, *args, **kwargs):
-        serializer = MetadataSerializer(data=request.data)
-        if serializer.is_valid():
-            try:
-                metadata = create_metadata(**serializer.validated_data)
-                return Response(MetadataSerializer(metadata).data, status=status.HTTP_201_CREATED)
-            except ValidationError as e:
-                return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class DeliveryCreateAPIView(ApiAuthMixin, APIView):
-    def post(self, request, *args, **kwargs):
-        serializer = DeliverySerializer(data=request.data)
-        if serializer.is_valid():
-            try:
-                delivery = create_delivery(**serializer.validated_data)
-                return Response(DeliverySerializer(delivery).data, status=status.HTTP_201_CREATED)
-            except ValidationError as e:
-                return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LedgerNewAPIView(ApiAuthMixin, APIView):

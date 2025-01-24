@@ -5,7 +5,7 @@ from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import ValidationError
 
-from .models.ledger import Ledger
+from .models import Ledger
 
 
 def ledger_list():
@@ -14,14 +14,7 @@ def ledger_list():
 
 def ledger_details(*, ledger_id):
     try:
-        return Ledger.objects.select_related(
-            "carrier",
-            "delivery",
-            "document",
-            "recipient",
-            "metadatas",
-            "sender",
-        ).get(id=ledger_id)
+        return Ledger.objects.get(id=ledger_id)
 
     except Ledger.DoesNotExist:
         raise ValueError("Ledger Doesn't exist")
