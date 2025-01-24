@@ -11,6 +11,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from core.api.mixins import ApiAuthMixin
+from core.ledgers.models.ledger_sharing import LedgerSharing
 
 from .models.ledger import Ledger
 from .selectors import ledger_details
@@ -229,3 +230,19 @@ class ShareLedgerAPIView(ApiAuthMixin, APIView):
                 {"error": str(e)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
+
+
+class SharedLedgersAPIView(ApiAuthMixin, APIView):
+    serializer_class = LedgerSharingSerializer
+
+    def get(self, request) -> Response:
+        try:
+            user_id = request.user.id
+
+            shared_ledgers = LedgerSharing.objects.filter(shared_to=user_id).select_related("ledger")
+            serializer = LedgerSharingSerializer(shared_ledgers, many=True)
+
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

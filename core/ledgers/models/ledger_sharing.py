@@ -7,8 +7,8 @@ from .ledger import Ledger
 
 
 class LedgerSharing(BaseModel):
-    ledger = models.OneToOneField(Ledger, on_delete=models.CASCADE, related_name="shared_ledger")
-    shared_to = models.OneToOneField(Member, on_delete=models.CASCADE, related_name="shared_ledgers")
+    ledger = models.ForeignKey(Ledger, on_delete=models.CASCADE, related_name="shared_ledger")
+    shared_to = models.ForeignKey(Member, on_delete=models.CASCADE, related_name="shared_ledgers")
 
     shared_at = models.DateTimeField(auto_now_add=True)
 

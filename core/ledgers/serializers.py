@@ -197,6 +197,8 @@ class LedgerNewSerializer(serializers.Serializer):
 
 
 class LedgerSharingSerializer(serializers.ModelSerializer):
+    ledger = LedgerSerializer()
+
     class Meta:
         model = LedgerSharing
         fields = ["ledger", "shared_to", "shared_at"]
