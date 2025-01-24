@@ -13,7 +13,6 @@ class AttachmentSerializer(serializers.ModelSerializer):
             "file_type",
             "file_size",
             "description",
-            "uploaded_at",
         )
 
 
@@ -27,7 +26,6 @@ class LedgerDoumentAttachmentSerializer(serializers.ModelSerializer):
             "file_type",
             "file_size",
             "description",
-            "uploaded_at",
         )
 
 
@@ -39,8 +37,6 @@ class LedgerDetailSerializer(serializers.ModelSerializer):
 
 
 class LedgerNewSerializer(serializers.Serializer):
-    letter = LedgerDoumentAttachmentSerializer(many=True)
-    attachment = AttachmentSerializer(many=True, required=False)
     sender_name = serializers.CharField()
     sender_phone_number = serializers.CharField()
     sender_email = serializers.CharField()
@@ -63,6 +59,7 @@ class LedgerNewSerializer(serializers.Serializer):
 
 
 class LedgerListSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
     sender_name = serializers.CharField()
     sender_email = serializers.CharField()
     recipient_name = serializers.CharField( required=False)
@@ -78,9 +75,9 @@ class LedgerListSerializer(serializers.Serializer):
 
 
 class LedgerSharingSerializer(serializers.ModelSerializer):
-    ledger = LedgerDetailSerializer()
+    ledger = LedgerListSerializer()
 
     class Meta:
         model = LedgerSharing
-        fields = ["ledger", "shared_to", "shared_at"]
+        fields = ["ledger", "shared_by", "shared_at"]
         read_only_fields = ["shared_at"]

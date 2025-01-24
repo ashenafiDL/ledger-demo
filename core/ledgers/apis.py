@@ -37,11 +37,15 @@ class LedgerNewAPIView(ApiAuthMixin, APIView):
         serializer = LedgerNewSerializer(data=request.data)
         try:
             serializer.is_valid()
+            attachments = [file for key, file in request.FILES.items() if key.startswith("attachment")]
+            letters = [file for key, file in request.FILES.items() if key.startswith("letter")]
             ledger = create_ledger(
                 current_user=request.user,
+                attachment=attachments,
+                letter=letters,
                 **serializer.validated_data,
             )
-            generate_ledger_pdf.delay_on_commit(ledger_id=ledger.id)
+            # generate_ledger_pdf.delay(ledger_id=ledger.id)
             return Response(
                 {"id": ledger.id, "message": "Ledger created successfully."},
                 status=status.HTTP_201_CREATED,
@@ -109,19 +113,22 @@ class ShareLedgerAPIView(ApiAuthMixin, APIView):
     def post(self, request, *args, **kwargs):
         ledger_id = request.data.get("ledger")
         shared_to_id = request.data.get("shared_to")
+        shared_by_id = request.user.id
 
         try:
             sharing_instance = share_ledger(
                 ledger_id=ledger_id,
                 shared_to_id=shared_to_id,
+                shared_by_id=shared_by_id
             )
 
             serializer = LedgerSharingSerializer(sharing_instance)
 
             return Response(
-                data=serializer.data,
+                {"id": sharing_instance.id, "message": "Ledger shared successfully."},
                 status=status.HTTP_201_CREATED,
             )
+
         except Exception as e:
             return Response(
                 {"error": str(e)},

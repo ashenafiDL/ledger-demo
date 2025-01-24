@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Ledger
+from .models import Ledger, LedgerSharing
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
@@ -66,9 +66,9 @@ class LedgerAdmin(admin.ModelAdmin):
             _("Document Information"),
             {
                 "fields": (
-                    "letter", 
-                    "attachment", 
-                    "written_at", 
+                    "letter",
+                    "attachment",
+                    "written_at",
                     "priority"),
             },
         ),
@@ -102,3 +102,29 @@ class LedgerAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Ledger, LedgerAdmin)
+
+
+class LedgerSharingAdmin(admin.ModelAdmin):
+    list_display = [
+        "ledger",
+        "shared_by",
+        "shared_to",
+        "shared_at",
+    ]
+    ordering = ["-shared_at"]
+    search_fields = ["shared_to__email", "shared_by__email"]
+    list_filter = ["shared_at"]
+    fieldsets = (
+        (
+            "Sharing Info",
+            {
+                "fields": (
+                    "ledger",
+                    "shared_to",
+                ),
+            },
+        ),
+    )
+
+
+admin.site.register(LedgerSharing, LedgerSharingAdmin)

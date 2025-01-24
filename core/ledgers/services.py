@@ -1,5 +1,6 @@
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import transaction
+from django.forms import ValidationError
 
 from core.departments.models import Department, JobTitle
 from .models import Ledger, Attachment, LedgerDoumentAttachment, LedgerSharing
@@ -41,8 +42,8 @@ def create_ledger(
     metadata_file_type: str = None,
     metadata_confidentiality: str = Ledger.MetadataConfidenciaity.INTERNAL,
     tracking_number: str = None,
-    letters=None,
-    attachments=None,
+    letter=None,
+    attachment=None,
     sender_name: str = None,
     sender_phone_number: str = None,
     sender_email: str = None,
@@ -57,10 +58,7 @@ def create_ledger(
     except JobTitle.DoesNotExist:
         raise ValueError(f"Job title with id '{job_title}' does not exist.")
 
-    if attachments is None:
-        attachments_data = []
-
-    if letters is None:
+    if letter is None:
         raise ValueError("letter is required!")
 
     ledger = Ledger.objects.create(
@@ -85,16 +83,17 @@ def create_ledger(
         tracking_number=tracking_number,
     )
 
-    for attachment_file in attachments_data:
-        attachment = create_attachment(
-            file_data={"file": attachment_file},
-            current_user=current_user,
-            model_class=Attachment,
-        )
-        if attachment:
-            ledger.attachment.add(attachment)
+    if attachment:
+        for attachment_file in attachment:
+            attachment = create_attachment(
+                file_data={"file": attachment_file},
+                current_user=current_user,
+                model_class=Attachment,
+            )
+            if attachment:
+                ledger.attachment.add(attachment)
 
-    for letter_file in letters:
+    for letter_file in letter:
         letter_attachment = create_attachment(
             file_data={"file": letter_file},
             current_user=current_user,
@@ -106,13 +105,15 @@ def create_ledger(
     return ledger
 
 
-def share_ledger(ledger_id: str, shared_to_id: str) -> LedgerSharing:
+def share_ledger(ledger_id: str, shared_to_id: str, shared_by_id: str) -> LedgerSharing:
     ledger = Ledger.objects.get(id=ledger_id)
     shared_to = Member.objects.get(id=shared_to_id)
+    shared_by = Member.objects.get(id=shared_by_id)
 
     sharing_instance = LedgerSharing.objects.create(
         ledger=ledger,
         shared_to=shared_to,
+        shared_by=shared_by
     )
 
     sharing_instance.full_clean()

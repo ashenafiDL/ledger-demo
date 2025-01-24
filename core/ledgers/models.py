@@ -97,23 +97,23 @@ class Ledger(BaseModel):
     letter = models.ManyToManyField(LedgerDoumentAttachment)
     attachment = models.ManyToManyField(Attachment, blank=True)
     ledger_subject= models.CharField(max_length=200, blank=True, null=True)
-    tracking_number= models.CharField(max_length=200, blank=True, null=True) 
+    tracking_number= models.CharField(max_length=200, blank=True, null=True)
     ledger_status = models.CharField(max_length=200, choices=LedgerStatus.choices, default=LedgerStatus.PENDING)
 
-    recipient_name= models.CharField(max_length=200, blank=True, null=True) 
-    recipient_phone_number= models.CharField(max_length=200, blank=True, null=True) 
+    recipient_name= models.CharField(max_length=200, blank=True, null=True)
+    recipient_phone_number= models.CharField(max_length=200, blank=True, null=True)
     job_title = models.ForeignKey(
         "departments.JobTitle", on_delete=models.PROTECT, null=True, blank=True
     )
     department = models.ForeignKey(
         "departments.Department", on_delete=models.PROTECT, null=True, blank=True
     )
-    written_at= models.CharField(max_length=200, blank=True, null=True) 
+    written_at= models.CharField(max_length=200, blank=True, null=True)
     priority = models.CharField(max_length=200, choices=LedgerPriority, null=True, blank=True)
 
-    metadata_keywords= models.CharField(max_length=200, blank=True, null=True) 
-    metadata_tags= models.CharField(max_length=200, blank=True, null=True) 
-    metadata_fileType= models.CharField(max_length=200, blank=True, null=True) 
+    metadata_keywords= models.CharField(max_length=200, blank=True, null=True)
+    metadata_tags= models.CharField(max_length=200, blank=True, null=True)
+    metadata_fileType= models.CharField(max_length=200, blank=True, null=True)
 
     metadata_confidentiality = models.CharField(
         max_length=200,
@@ -126,11 +126,12 @@ class Ledger(BaseModel):
 
 class LedgerSharing(BaseModel):
     ledger = models.ForeignKey(Ledger, on_delete=models.CASCADE, related_name="shared_ledger")
-    shared_to = models.ForeignKey(User, on_delete=models.CASCADE, related_name="shared_ledgers")
+    shared_to = models.ForeignKey(User, on_delete=models.CASCADE, related_name="shared_to_ledgers")
+    shared_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="shared_by_ledgers")
     shared_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         unique_together = ("ledger", "shared_to")
 
     def __str__(self):
-        return f"Ledger {self.ledger.id} shared to {self.shared_to}"
+        return f"Ledger {self.ledger.id} shared by {self.shared_by} to {self.shared_to}"
