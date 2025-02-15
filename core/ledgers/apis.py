@@ -144,3 +144,16 @@ class SharedLedgersAPIView(ApiAuthMixin, APIView):
 
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+# Search ledger by tracking number
+class SearchLedgerAPIView(APIView):
+    serializer_class = LedgerDetailSerializer
+
+    def get(self, request, tracking_number) -> Response:
+        try:
+            ledger = ledger_details(tracking_number=tracking_number)
+            serializer = LedgerDetailSerializer(ledger)
+            return Response(serializer.data)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

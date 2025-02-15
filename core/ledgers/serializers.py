@@ -55,7 +55,7 @@ class LedgerNewSerializer(serializers.Serializer):
     metadata_tags = serializers.CharField( required=False)
     metadata_fileType = serializers.CharField( required=False)
     metadata_confidentiality = serializers.CharField(required=False)
-    tracking_number = serializers.CharField(required=False)
+    tracking_number = serializers.SlugField(required=False)
 
 
 class LedgerListSerializer(serializers.Serializer):
@@ -68,7 +68,7 @@ class LedgerListSerializer(serializers.Serializer):
     metadata_keywords = serializers.CharField( required=False)
     metadata_tags = serializers.CharField( required=False)
     priority = serializers.CharField( required=False)
-    tracking_number = serializers.CharField(required=False)
+    tracking_number = serializers.SlugField(required=False)
     ledger_status = serializers.CharField( required=False)
     written_at = serializers.CharField()
     metadata_confidentiality = serializers.CharField(required=False)

@@ -4,6 +4,22 @@ from django.db import transaction
 from core.departments.models import Department, JobTitle
 from .models import Ledger, Attachment, LedgerDoumentAttachment, LedgerSharing
 from core.users.models import Member
+from django.db.models import Max
+
+def generate_tracking_number():
+    latest_ledger = Ledger.objects.aggregate(latest=Max("tracking_number"))
+    latest_number = latest_ledger["latest"]
+
+    if latest_number:
+        try:
+            number_part = int(latest_number.split("-")[1])
+        except (IndexError, ValueError):
+            number_part = 0
+    else:
+        number_part = 0
+
+    new_number = f"MINT-{number_part + 1:04d}"
+    return new_number
 
 
 def create_attachment(file_data, current_user, model_class):
@@ -59,6 +75,9 @@ def create_ledger(
 
     if letter is None:
         raise ValueError("letter is required!")
+
+    if not tracking_number:
+        tracking_number = generate_tracking_number()
 
     ledger = Ledger.objects.create(
         sender_name=sender_name,

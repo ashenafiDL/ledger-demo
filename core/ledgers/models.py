@@ -97,7 +97,7 @@ class Ledger(BaseModel):
     letter = models.ManyToManyField(LedgerDoumentAttachment)
     attachment = models.ManyToManyField(Attachment, blank=True)
     ledger_subject= models.CharField(max_length=200, blank=True, null=True)
-    tracking_number= models.CharField(max_length=200, blank=True, null=True)
+    tracking_number = models.SlugField(unique=True, blank=True, null=True)
     ledger_status = models.CharField(max_length=200, choices=LedgerStatus.choices, default=LedgerStatus.PENDING)
 
     recipient_name= models.CharField(max_length=200, blank=True, null=True)
