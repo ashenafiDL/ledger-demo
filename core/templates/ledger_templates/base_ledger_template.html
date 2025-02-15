@@ -1,0 +1,113 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+    <title>{% block title %} Ledger {% endblock %}</title>
+</head>
+<body>
+ {% block header %}
+  <header class="outgoing_letter_header">
+    <img
+      src="{% static 'images/pentagram.png' %}"
+      alt="Ethiopian flag pentagon star symbol"
+      class="pentagram"
+    />
+    <div class="header-info">
+      <p class="header-title">በኢትዮጵያ ፌደራላዊ ዲሞክራሲያዊ ሪፐብሊክ</p>
+      <p class="header-title">የኢኖቬሽንና ቴከኖሎጂ ሚኒስቴር</p>
+      <p class="header-subtitle">The Federal Democratic Republic of Ethiopia</p>
+      <p class="header-subtitle">Minister of Innovation and Technology</p>
+    </div>
+    <img
+      src="{% static 'images/mint.png' %}"
+      alt="Ministry of Innovation and Technology logo"
+      class="logo"
+    />
+  </header>
+{% endblock %}
+
+    {% block body %}
+
+    {% endblock %}
+
+    {% block footer %}
+  <section class="footer-wrapper">
+    <hr class="separator" />
+    <footer>
+      <div class="contact-info">
+        <div class="contact-item">
+          <img
+            class="contact-icon"
+            src="{% static 'icons/laptop.svg' %}"
+            alt="Website icon"
+            width="15"
+            height="15"
+          />
+          <p class="contact-text">WWW.MINT.gov.et</p>
+        </div>
+
+        <div class="contact-item">
+          <img
+            class="contact-icon"
+            src="{% static 'icons/phone.svg' %}"
+            alt="Phone icon"
+            width="15"
+            height="15"
+          />
+          <p class="contact-text">+251111264994</p>
+        </div>
+
+        <div class="contact-item">
+          <img
+            class="contact-icon"
+            src="{% static 'icons/square-pen.svg' %}"
+            alt="Social media icon"
+            width="15"
+            height="15"
+          />
+          <p class="contact-text">mint @ethionet.et</p>
+        </div>
+
+        <div class="contact-item">
+          <img
+            class="contact-icon"
+            src="{% static 'icons/mail.svg' %}"
+            alt="Mail icon"
+            width="15"
+            height="15"
+          />
+          <p class="contact-text">2490</p>
+        </div>
+
+        <div class="contact-item">
+          <img
+            class="contact-icon"
+            src="{% static 'icons/map-pin.svg' %}"
+            alt="Location icon"
+            width="15"
+            height="15"
+          />
+          <p class="contact-text">Addis Ababa Ethiopia</p>
+        </div>
+      </div>
+
+      <div class="footer-info">
+        <p class="footer-title">ከእርምጃ ወደ ሩጫ</p>
+        <p class="footer-subtitle">From Faciltator to Main Actor</p>
+      </div>
+
+      <!-- <div class="qr-code-container">
+        <img
+          src="{% static 'images/qr_code.png' %}"
+          alt="QR code"
+          class="qr-code-image"
+        />
+      </div> -->
+    </footer>
+  </section>
+{% endblock %}
+</body>
+</html>

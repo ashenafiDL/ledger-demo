@@ -1,12 +1,11 @@
 from django.contrib import admin, messages
 from django.core.exceptions import ValidationError
-from unfold.admin import ModelAdmin
 
 from .models import Member
 from .services import user_create
 
 
-class MemberAdmin(ModelAdmin):
+class MemberAdmin(admin.ModelAdmin):
     base_model = Member
     list_display: list[str] = [
         "email",

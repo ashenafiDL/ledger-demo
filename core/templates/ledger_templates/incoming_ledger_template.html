@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MINT Document Management - Delivery Note</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+        line-height: 1.3;
+        color: #333;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0;
+      }
+      .header {
+        background-color: #006064;
+        padding: 15px;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .header h1 {
+        margin: 0;
+        font-size: 16px;
+        color: #ffffff;
+      }
+      .header-right {
+        text-align: right;
+        color: #ffffff;
+        font-size: 11px;
+      }
+      .section {
+        margin-bottom: 20px;
+        padding: 0 15px;
+      }
+      .section-title {
+        font-size: 13px;
+        color: #006064;
+        border-bottom: 1px solid #006064;
+        margin-bottom: 10px;
+        padding-bottom: 4px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+      .field {
+        display: grid;
+        grid-template-columns: 140px 1fr;
+        gap: 8px;
+        align-items: center;
+      }
+      .label {
+        font-weight: bold;
+        color: #444;
+        font-size: 11px;
+      }
+      .value {
+        color: #333;
+      }
+      .detail-info {
+        background-color: #f5f5f5;
+        padding: 15px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+      }
+      .metadata {
+        font-size: 11px;
+        color: #666;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border-left: 3px solid #006064;
+      }
+      .footer {
+        margin-top: 30px;
+        padding: 15px;
+        border-top: 1px solid #ddd;
+        display: flex;
+        justify-content: space-between;
+        font-size: 11px;
+      }
+      .signature-section {
+        margin-top: 40px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        padding: 0 15px;
+      }
+      .signature-box {
+        border-top: 1px solid #666;
+        padding-top: 5px;
+        text-align: center;
+        font-size: 11px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>Digital MINT Document Management</h1>
+      <div class="header-right">
+        <div>Ledger ID: {{ ledger.id }}</div>
+        <div>Received: {{ ledger.written_at }}</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Document Information</div>
+      <div class="grid">
+        <div class="field">
+          <span class="label">Subject:</span>
+          <span class="value">{{ ledger.ledger_subject }}</span>
+        </div>
+        <div class="field">
+          <span class="label">Tracking Number:</span>
+          <span class="value">{{ ledger.tracking_number }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section detail-info">
+      <div class="section-title">Carrier Details</div>
+      <div class="grid">
+        <div class="field">
+          <span class="label">First Name:</span>
+          <span class="value">{{ ledger.carrier_person_first_name }}</span>
+        </div>
+        <div class="field">
+          <span class="label">Middle Name:</span>
+          <span class="value">{{ ledger.carrier_person_middle_name }}</span>
+        </div>
+        <div class="field">
+          <span class="label">Phone Number:</span>
+          <span class="value">{{ ledger.carrier_phone_number }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section detail-info">
+      <div class="section-title">Sender Information</div>
+      <div class="grid">
+        <div class="field">
+          <span class="label">Name:</span>
+          <span class="value">{{ ledger.sender_name }}</span>
+        </div>
+        <div class="field">
+          <span class="label">Phone Number:</span>
+          <span class="value">{{ ledger.sender_phone_number }}</span>
+        </div>
+        <div class="field">
+          <span class="label">Email:</span>
+          <span class="value">{{ ledger.sender_email }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section detail-info">
+      <div class="section-title">Recipient Information</div>
+      <div class="grid">
+        <div class="field">
+          <span class="label">Name:</span>
+          <span class="value">{{ ledger.recipient_name }}</span>
+        </div>
+        <div class="field">
+          <span class="label">Phone Number:</span>
+          <span class="value">{{ ledger.recipient_phone_number }}</span>
+        </div>
+        <div class="field">
+          <span class="label">Job Title:</span>
+          <span class="value">{{ ledger.job_title.title_en }}</span>
+        </div>
+        <div class="field">
+          <span class="label">Department:</span>
+          <span class="value">{{ ledger.department.department_name_en }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section detail-info">
+      <div class="section-title">Metadata</div>
+      <div class="grid">
+        <div class="field">
+          <span class="label">Keywords:</span>
+          <span class="value">{{ ledger.metadata_keywords }}</span>
+        </div>
+        <div class="field">
+          <span class="label">Tags:</span>
+          <span class="value">{{ ledger.metadata_tags }}</span>
+        </div>
+        <div class="field">
+          <span class="label">File Type:</span>
+          <span class="value">{{ ledger.metadata_fileType }}</span>
+        </div>
+        <div class="field">
+          <span class="label">Confidentiality:</span>
+          <span class="value">{{ ledger.metadata_confidentiality }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="signature-section">
+      <div class="signature-box">
+        <div>Delivered By</div>
+        <div>
+          {{ ledger.carrier_person_first_name }}
+          {{ ledger.carrier_person_middle_name }}
+        </div>
+      </div>
+      <div class="signature-box">
+        <div>Received By</div>
+        <div>MINT Document Management</div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div>MINT Document Management System</div>
+      <div>Document Reference: {{ ledger.id }}</div>
+    </div>
+  </body>
+</html>
